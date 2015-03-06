@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 
@@ -67,6 +68,13 @@ public class LifecycleMonitorActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+    	if ( savedInstanceState != null ) {
+    		Log.println(Log.DEBUG, "lifecycleevents", "onStart() method was invoked...but not for the first time");
+    	}
+    	else
+    	{
+    		Log.println(Log.DEBUG, "lifecycleevents", "onStart() method was invoked for the first time");
+    	}
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lifecycle_monitor);
         
@@ -74,7 +82,6 @@ public class LifecycleMonitorActivity extends Activity {
         okButton.setOnClickListener(buttonClickListener);
         Button cancelButton = (Button)findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(buttonClickListener);
-        Log.d(Constants.TAG, "onCreate() method was invoked");
     }    
 
     @Override
@@ -95,4 +102,77 @@ public class LifecycleMonitorActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+    
+    @Override
+    protected void onStart() {
+      super.onStart();
+    }
+   
+    @Override
+    protected void onResume() {
+      super.onResume();
+      Log.println(Log.DEBUG, "lifecycleevents", "onResume() method was invoked");
+    }
+   
+    @Override
+    protected void onPause() {
+      super.onPause();
+      Log.println(Log.DEBUG, "lifecycleevents", "onPause() method was invoked");
+    }
+   
+    @Override
+    protected void onStop() {
+      super.onStop();
+      Log.println(Log.DEBUG, "lifecycleevents", "onStop() method was invoked");
+    }
+   
+    @Override
+    protected void onDestroy() {
+      super.onDestroy();
+      Log.println(Log.DEBUG, "lifecycleevents", "onDestroy() method was invoked");
+    }
+   
+    @Override
+    protected void onRestart() {
+      super.onRestart();
+      Log.println(Log.DEBUG, "lifecycleevents", "onRestart() method was invoked");
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+      // apelarea metodei din activitatea parinte este recomandata, dar nu obligatorie
+      super.onSaveInstanceState(savedInstanceState);
+      
+      CheckBox myCheckBox = (CheckBox)findViewById(R.id.remember_me_checkbox);
+      EditText usernameEditText = (EditText)findViewById(R.id.username_edit_text);
+	  EditText passwordEditText = (EditText)findViewById(R.id.password_edit_text);
+      if ( myCheckBox.isChecked() )
+      {
+    	  savedInstanceState.putString(Constants.USERNAME_EDIT_TEXT, usernameEditText.getText().toString() );
+    	  savedInstanceState.putString(Constants.PASSWORD_EDIT_TEXT, passwordEditText.getText().toString() );
+    	  savedInstanceState.putBoolean(Constants.REMEMBER_ME_CHECKBOX, myCheckBox.isChecked() );
+      }
+    }
+   
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+      // apelarea metodei din activitatea parinte este recomandata, dar nu obligatorie
+      super.onRestoreInstanceState(savedInstanceState);
+	  CheckBox myCheckBox = (CheckBox)findViewById(R.id.remember_me_checkbox);
+      EditText usernameEditText = (EditText)findViewById(R.id.username_edit_text);
+	  EditText passwordEditText = (EditText)findViewById(R.id.password_edit_text);
+      if ( savedInstanceState.containsKey(Constants.REMEMBER_ME_CHECKBOX) ) 
+      {
+    	  myCheckBox.setChecked( savedInstanceState.getBoolean( Constants.REMEMBER_ME_CHECKBOX ) );
+      }
+      if ( savedInstanceState.containsKey(Constants.USERNAME_EDIT_TEXT) ) 
+      {
+    	  usernameEditText.setText( savedInstanceState.getString( Constants.USERNAME_EDIT_TEXT ) );
+      }
+      if ( savedInstanceState.containsKey(Constants.PASSWORD_EDIT_TEXT) ) 
+      {
+    	  passwordEditText.setText( savedInstanceState.getString( Constants.PASSWORD_EDIT_TEXT ) );
+      }
+    }
+    
 }
